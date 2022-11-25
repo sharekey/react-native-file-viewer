@@ -22,6 +22,7 @@ import java.io.File;
 
 public class RNFileViewerModule extends ReactContextBaseJavaModule {
   private final ReactApplicationContext reactContext;
+  private static final String PREDEFINED_MIMETYPE = "mimeType" ;
   private static final String SHOW_OPEN_WITH_DIALOG = "showOpenWithDialog" ;
   private static final String SHOW_STORE_SUGGESTIONS ="showAppsSuggestions";
   private static final String OPEN_EVENT = "RNFileViewerDidOpen";
@@ -73,8 +74,11 @@ public class RNFileViewerModule extends ReactContextBaseJavaModule {
       return;
     }
 
-    String extension = MimeTypeMap.getFileExtensionFromUrl(path).toLowerCase();
-    String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+    String mimeType = options.hasKey(PREDEFINED_MIMETYPE) ? options.getString(PREDEFINED_MIMETYPE) : null;
+    if (mimeType == null) {
+      String extension = MimeTypeMap.getFileExtensionFromUrl(path).toLowerCase();
+      mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+    }
 
     Intent shareIntent = new Intent();
 
