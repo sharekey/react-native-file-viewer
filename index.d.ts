@@ -1,9 +1,8 @@
 interface RNFileViewerOptions {
-  mimeType?: string,
-  onDismiss?(): any;
   displayName?: string;
-  showOpenWithDialog?: boolean;
   showAppsSuggestions?: boolean;
+  showOpenWithDialog?: boolean;
+  onDismiss?(): any;
 }
 
 declare function open(
