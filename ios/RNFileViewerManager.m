@@ -4,6 +4,7 @@
 #import <React/RCTConvert.h>
 
 #define OPEN_EVENT @"RNFileViewerDidOpen"
+#define CAN_NOT_PREVIEW_EVENT @"RNFileViewerCanNotPreview"
 #define DISMISS_EVENT @"RNFileViewerDidDismiss"
 
 @interface File: NSObject<QLPreviewItem>
@@ -105,24 +106,28 @@
 RCT_EXPORT_MODULE()
 
 - (NSArray<NSString *> *)supportedEvents {
-    return @[OPEN_EVENT, DISMISS_EVENT];
+    return @[OPEN_EVENT, DISMISS_EVENT, CAN_NOT_PREVIEW_EVENT];
 }
 
 RCT_EXPORT_METHOD(open:(NSString *)path invocation:(nonnull NSNumber *)invocationId
-    options:(NSDictionary *)options callback:(RCTResponseSenderBlock)callback)
+    options:(NSDictionary *)options
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
 {
     NSString *displayName = [RCTConvert NSString:options[@"displayName"]];
     File *file = [[File alloc] initWithPath:path title:displayName];
 
     if (![QLPreviewController canPreviewItem:file]) {
         [self sendEventWithName:CAN_NOT_PREVIEW_EVENT body: @{@"id": invocationId}];
-        callback(@YES);
+        reject(CAN_NOT_PREVIEW_EVENT, CAN_NOT_PREVIEW_EVENT, NULL);
 
         return;
     }
 
     QLPreviewController *controller = [[CustomQLViewController alloc] initWithFile:file identifier:invocationId];
+
     controller.delegate = self;
+
 
     typeof(self) __weak weakSelf = self;
     [[RNFileViewer topViewController] presentViewController:controller animated:YES completion:^{
