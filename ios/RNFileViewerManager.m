@@ -109,10 +109,17 @@ RCT_EXPORT_MODULE()
 }
 
 RCT_EXPORT_METHOD(open:(NSString *)path invocation:(nonnull NSNumber *)invocationId
-    options:(NSDictionary *)options)
+    options:(NSDictionary *)options callback:(RCTResponseSenderBlock)callback)
 {
     NSString *displayName = [RCTConvert NSString:options[@"displayName"]];
     File *file = [[File alloc] initWithPath:path title:displayName];
+
+    if (![QLPreviewController canPreviewItem:file]) {
+        [self sendEventWithName:CAN_NOT_PREVIEW_EVENT body: @{@"id": invocationId}];
+        callback(@YES);
+
+        return;
+    }
 
     QLPreviewController *controller = [[CustomQLViewController alloc] initWithFile:file identifier:invocationId];
     controller.delegate = self;
