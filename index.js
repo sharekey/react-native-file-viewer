@@ -5,7 +5,7 @@ const eventEmitter = new NativeEventEmitter(RNFileViewer);
 
 let lastId = 0;
 function canOpen(path, name) {
-  return RNFileViewer.canOpen(normalize(path, name));
+  return RNFileViewer.canOpen(normalize(path), name);
 }
 
 function open(path, options = {}) {
