@@ -8,7 +8,7 @@ interface RNFileViewerOptions {
 declare function open(
   path: string,
   options?: RNFileViewerOptions | string
-): Promise<void>;
+): Promise<boolean>;
 
 declare function canOpen(
   path: string,
