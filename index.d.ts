@@ -10,8 +10,12 @@ declare function open(
   options?: RNFileViewerOptions | string
 ): Promise<void>;
 
+declare function canOpen(
+  path: string,
+): Promise<boolean>;
+
 declare namespace _default {
-  export { open };
+  export { open, canOpen };
 }
 
 export default _default;

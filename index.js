@@ -4,6 +4,9 @@ const { RNFileViewer } = NativeModules;
 const eventEmitter = new NativeEventEmitter(RNFileViewer);
 
 let lastId = 0;
+function canOpen(path) {
+  return RNFileViewer.canOpen(normalize(path));
+}
 
 function open(path, options = {}) {
   const _options =

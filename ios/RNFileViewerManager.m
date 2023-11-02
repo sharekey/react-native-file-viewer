@@ -109,6 +109,15 @@ RCT_EXPORT_MODULE()
     return @[OPEN_EVENT, DISMISS_EVENT, CAN_NOT_PREVIEW_EVENT];
 }
 
+RCT_EXPORT_METHOD(canOpen:(NSString *)path
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+{
+    File *file = [[File alloc] initWithPath:path title:@"Item"];
+
+    resolve(@([QLPreviewController canPreviewItem:file]));
+}
+
 RCT_EXPORT_METHOD(open:(NSString *)path invocation:(nonnull NSNumber *)invocationId
     options:(NSDictionary *)options
                   resolve:(RCTPromiseResolveBlock)resolve
