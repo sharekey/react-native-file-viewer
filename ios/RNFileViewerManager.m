@@ -116,6 +116,10 @@ RCT_EXPORT_METHOD(canOpen:(NSString *)path
 {
     File *file = [[File alloc] initWithPath:path title:title];
 
+    QLPreviewController *controller = [[CustomQLViewController alloc] initWithFile:file identifier:@0];
+
+    controller.delegate = self;
+
     if ([QLPreviewController canPreviewItem:file]) {
         resolve(@YES);
     } else {
@@ -123,8 +127,11 @@ RCT_EXPORT_METHOD(canOpen:(NSString *)path
     }
 }
 
-RCT_EXPORT_METHOD(open:(NSString *)path invocation:(nonnull NSNumber *)invocationId
-    options:(NSDictionary *)options)
+RCT_EXPORT_METHOD(open:(NSString *)path
+                  invocation:(nonnull NSNumber *)invocationId
+                  options:(NSDictionary *)options
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
 {
     NSString *displayName = [RCTConvert NSString:options[@"displayName"]];
     File *file = [[File alloc] initWithPath:path title:displayName];
@@ -133,6 +140,11 @@ RCT_EXPORT_METHOD(open:(NSString *)path invocation:(nonnull NSNumber *)invocatio
 
     controller.delegate = self;
 
+    if ([QLPreviewController canPreviewItem:file]) {
+        resolve(@YES);
+    } else {
+        resolve(@NO);
+    }
 
     typeof(self) __weak weakSelf = self;
     [[RNFileViewer topViewController] presentViewController:controller animated:YES completion:^{
