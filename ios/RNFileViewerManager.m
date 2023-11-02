@@ -142,6 +142,7 @@ RCT_EXPORT_METHOD(open:(NSString *)path
 
     if (![QLPreviewController canPreviewItem:file]) {
         resolve(@NO);
+        return;
     }
 
     typeof(self) __weak weakSelf = self;

@@ -39,7 +39,7 @@ function open(path, options = {}) {
       }
     );
 
-    RNFileViewer.open(normalize(path), currentId, nativeOptions);
+    RNFileViewer.open(normalize(path), currentId, nativeOptions).then((isSuccess = true) => resolve(isSuccess));
   });
 }
 
