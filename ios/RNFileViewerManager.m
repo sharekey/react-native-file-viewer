@@ -110,28 +110,24 @@ RCT_EXPORT_MODULE()
 }
 
 RCT_EXPORT_METHOD(canOpen:(NSString *)path
+                  title:(NSString *) title
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 {
-    File *file = [[File alloc] initWithPath:path title:@"Item"];
+    File *file = [[File alloc] initWithPath:path title:title];
 
-    resolve(@([QLPreviewController canPreviewItem:file]));
+    if ([QLPreviewController canPreviewItem:file]) {
+        resolve(@YES);
+    } else {
+        resolve(@NO);
+    }
 }
 
 RCT_EXPORT_METHOD(open:(NSString *)path invocation:(nonnull NSNumber *)invocationId
-    options:(NSDictionary *)options
-                  resolve:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject)
+    options:(NSDictionary *)options)
 {
     NSString *displayName = [RCTConvert NSString:options[@"displayName"]];
     File *file = [[File alloc] initWithPath:path title:displayName];
-
-    if (![QLPreviewController canPreviewItem:file]) {
-        [self sendEventWithName:CAN_NOT_PREVIEW_EVENT body: @{@"id": invocationId}];
-        reject(CAN_NOT_PREVIEW_EVENT, CAN_NOT_PREVIEW_EVENT, NULL);
-
-        return;
-    }
 
     QLPreviewController *controller = [[CustomQLViewController alloc] initWithFile:file identifier:invocationId];
 

@@ -12,6 +12,7 @@ declare function open(
 
 declare function canOpen(
   path: string,
+  name: string,
 ): Promise<boolean>;
 
 declare namespace _default {
