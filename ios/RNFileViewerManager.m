@@ -109,23 +109,23 @@ RCT_EXPORT_MODULE()
     return @[OPEN_EVENT, DISMISS_EVENT, CAN_NOT_PREVIEW_EVENT];
 }
 
-RCT_EXPORT_METHOD(canOpen:(NSString *)path
-                  title:(NSString *) title
-                  resolve:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject)
-{
-    File *file = [[File alloc] initWithPath:path title:title];
+// RCT_EXPORT_METHOD(canOpen:(NSString *)path
+//                   title:(NSString *) title
+//                   resolve:(RCTPromiseResolveBlock)resolve
+//                   reject:(RCTPromiseRejectBlock)reject)
+// {
+//     File *file = [[File alloc] initWithPath:path title:title];
 
-    QLPreviewController *controller = [[CustomQLViewController alloc] initWithFile:file identifier:@0];
+//     QLPreviewController *controller = [[CustomQLViewController alloc] initWithFile:file identifier:@0];
 
-    controller.delegate = self;
+//     controller.delegate = self;
 
-    if ([QLPreviewController canPreviewItem:file]) {
-        resolve(@YES);
-    } else {
-        resolve(@NO);
-    }
-}
+//     if ([QLPreviewController canPreviewItem:file]) {
+//         resolve(@YES);
+//     } else {
+//         resolve(@NO);
+//     }
+// }
 
 RCT_EXPORT_METHOD(open:(NSString *)path
                   invocation:(nonnull NSNumber *)invocationId
@@ -140,14 +140,13 @@ RCT_EXPORT_METHOD(open:(NSString *)path
 
     controller.delegate = self;
 
-    if ([QLPreviewController canPreviewItem:file]) {
-        resolve(@YES);
-    } else {
+    if (![QLPreviewController canPreviewItem:file]) {
         resolve(@NO);
     }
 
     typeof(self) __weak weakSelf = self;
     [[RNFileViewer topViewController] presentViewController:controller animated:YES completion:^{
+        resolve(@YES);
         [weakSelf sendEventWithName:OPEN_EVENT body: @{@"id": invocationId}];
     }];
 }
